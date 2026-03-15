@@ -116,7 +116,7 @@ def fetch_yahoo(ticker: str, start: str, end: str, retries: int = 3) -> pd.Serie
     del último día hábil de cada mes.
     """
     try:
-        import yfinance as yf
+        import yfinance as yf  # type: ignore[import-untyped]
     except ImportError:
         log.error("yfinance no instalado.  Ejecute:  pip install yfinance")
         sys.exit(1)
@@ -163,7 +163,7 @@ def fetch_fred(series_id: str, start: str, end: str) -> pd.Series:
     Requiere pandas_datareader:  pip install pandas-datareader
     """
     try:
-        from pandas_datareader import data as pdr
+        from pandas_datareader import data as pdr  # type: ignore[import-untyped]
     except ImportError:
         log.warning("pandas_datareader no instalado; se omite FRED.")
         return pd.Series(dtype=float, name=series_id)
@@ -259,7 +259,7 @@ def build_dataframe(start: str, end: str) -> pd.DataFrame:
                     log.info(f"  {country}: FRED rellenó {filled} meses adicionales")
 
     # Convertir índice a Timestamps de fin de mes (más legible en Excel)
-    df.index = df.index.to_timestamp("M")
+    df.index = pd.PeriodIndex(df.index).to_timestamp("M")
     df.index.name = "Fecha (fin de mes)"
     return df
 
